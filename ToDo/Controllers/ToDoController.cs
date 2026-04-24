@@ -62,5 +62,22 @@ namespace ToDo.Controllers
             await _context.SaveChangesAsync();
             return StatusCode(201, tarefaExistente);
         }
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> DeleteTarefa(int id)
+        {
+
+            var tarefa = await _context.Tarefas.FindAsync(id);
+
+            if (tarefa == null)
+            {
+                return NotFound("Tarefa não encontrada.");
+            }
+            _context.Tarefas.Remove(tarefa);
+            await _context.SaveChangesAsync();
+            return Ok("Tarefa deletada com sucesso!");
+        }
     }
 } 
