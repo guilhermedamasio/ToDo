@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Data;
 using ToDo.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ToDo.Controllers
 {
@@ -22,8 +23,10 @@ namespace ToDo.Controllers
     }
 
     [HttpGet("{id:int}")] // GET id único.
-
-    public async Task<ActionResult<Tarefa>> GetTarefa(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<Tarefa>> GetTarefa(int id)
         {
             var tarefa = await _context.Tarefas.FindAsync(id);
 
@@ -34,12 +37,30 @@ namespace ToDo.Controllers
             return Ok(tarefa);
        }
     [HttpPost] // Adicionar nova tarefa.
-    public async Task<IActionResult> Add(Tarefa tarefa)
+    public async Task<IActionResult> PostTarefa(Tarefa tarefa)
         {
             _context.Tarefas.Add(tarefa);
             await _context.SaveChangesAsync();
             return Ok(tarefa);
 
+        }
+
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> UpdateTarefa(int id, [FromBody]Tarefa tarefaAtualizada)
+        {
+
+            var tarefaExistente = await _context.Tarefas.FindAsync(id);
+
+            if (tarefaExistente == null)
+            {
+                return NotFound("Tarefa não encontrada.");
+            }
+            _context.Entry(tarefaExistente).CurrentValues.SetValues(tarefaAtualizada);
+            await _context.SaveChangesAsync();
+            return StatusCode(201, tarefaExistente);
         }
     }
 } 
