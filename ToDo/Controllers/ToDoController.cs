@@ -14,40 +14,14 @@ namespace ToDo.Controllers
         {
             _context = context;
         }
-
-
-        [HttpGet]
-        public async Task<IEnumerable<Tarefa>>> GetTarefas() 
+    
+    [HttpPost]
+        public async Task<IActionResult> Add(Tarefa tarefa)
         {
-            return await _context.Tarefas.ToListAsync();
-        }
+            _context.Tarefas.Add(tarefa);
+            await _context.SaveChangesAsync();
+            return Ok(tarefa);
 
-        [HttpGet("{id:int}")]
-        public IActionResult Get2(int id, int id2)
-        {
-
-            return Ok(new Tarefa { Id = id, Nome = "" });
-        }
-
-        [HttpPost]
-        public IActionResult Post(Tarefa tarefa)
-        {
-            return CreatedAtAction("Get", new { id = tarefa.Id }, tarefa);
-        }
-
-        [HttpPut("{id:int}")]
-        public IActionResult Put(int id, Tarefa tarefa) 
-        {
-            if (id != tarefa.Id)
-            {
-                return BadRequest();
-            }
-            return NoContent();
-        }
-        [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
-        {
-            return NoContent();
         }
     }
-}
+} 
