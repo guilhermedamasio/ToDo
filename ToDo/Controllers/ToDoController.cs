@@ -21,8 +21,20 @@ namespace ToDo.Controllers
         return Ok(tarefas);
     }
 
-    [HttpPost]
-        public async Task<IActionResult> Add(Tarefa tarefa)
+    [HttpGet("{id:int}")] // GET id único.
+
+    public async Task<ActionResult<Tarefa>> GetTarefa(int id)
+        {
+            var tarefa = await _context.Tarefas.FindAsync(id);
+
+            if (tarefa == null)
+            {
+                return NotFound("Tarefa não encontrada.");
+            }
+            return Ok(tarefa);
+       }
+    [HttpPost] // Adicionar nova tarefa.
+    public async Task<IActionResult> Add(Tarefa tarefa)
         {
             _context.Tarefas.Add(tarefa);
             await _context.SaveChangesAsync();
