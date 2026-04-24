@@ -14,7 +14,13 @@ namespace ToDo.Controllers
         {
             _context = context;
         }
-    
+    [HttpGet] // GET Completo.
+    public async Task<ActionResult<IEnumerable<Tarefa>>> GetTarefas()
+    {
+        var tarefas = await _context.Tarefas.ToListAsync();
+        return Ok(tarefas);
+    }
+
     [HttpPost]
         public async Task<IActionResult> Add(Tarefa tarefa)
         {
