@@ -37,11 +37,16 @@ namespace ToDo.Controllers
             return Ok(tarefa);
        }
     [HttpPost] // Adicionar nova tarefa.
-    public async Task<IActionResult> PostTarefa(Tarefa tarefa)
+    public async Task<IActionResult> PostTarefa([FromBody] Tarefa tarefa)
+
         {
+            if ( !(ModelState.IsValid))
+            {
+                return BadRequest(ModelState);
+            }
             _context.Tarefas.Add(tarefa);
             await _context.SaveChangesAsync();
-            return Ok(tarefa);
+            return Created("Tarefa adicionada com sucesso!", tarefa);
 
         }
 
